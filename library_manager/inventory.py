@@ -2,84 +2,76 @@ import json
 from pathlib import Path
 import logging
 from .book import Book
+from typing import List, Optional
 
 logger = logging.getLogger(__name__)
 
 class LibraryInventory:
-    def __init__(self, json_path="catalog.json"):
-        self.books = []  # list of Book objects
+    def __init__(self, json_path: str = "books.json"):
         self.json_path = Path(json_path)
-        # try load existing catalog
-        try:
-            self.load_from_file()
-        except Exception as e:
-            logger.info("Starting with empty catalog: %s", e)
-
-    def add_book(self, book: Book):
-        # prevent duplicate isbn
-        if self.search_by_isbn(book.isbn):
-            logger.error("Book with ISBN %s already exists", book.isbn)
-            raise ValueError("ISBN already exists in catalog")
-        self.books.append(book)
-        logger.info("Added book %s", book.isbn)
-
-    def search_by_title(self, title_substring):
-        title_substring = title_substring.lower()
-        return [b for b in self.books if title_substring in b.title.lower()]
-
-    def search_by_isbn(self, isbn):
-        for b in self.books:
-            if b.isbn == isbn:
-                return b
-        return None
-
-    def display_all(self):
-        return list(self.books)  # return copy
-
-    def issue_book(self, isbn):
-        b = self.search_by_isbn(isbn)
-        if not b:
-            logger.error("Issue failed. ISBN %s not found", isbn)
-            raise LookupError("Book not found")
-        if not b.issue():
-            logger.error("Issue failed. Book %s already issued", isbn)
-            raise RuntimeError("Book already issued")
-        logger.info("Issued book %s", isbn)
-        return True
-
-    def return_book(self, isbn):
-        b = self.search_by_isbn(isbn)
-        if not b:
-            logger.error("Return failed. ISBN %s not found", isbn)
-            raise LookupError("Book not found")
-        if not b.return_book():
-            logger.error("Return failed. Book %s already available", isbn)
-            raise RuntimeError("Book already available")
-        logger.info("Returned book %s", isbn)
-        return True
-
-    def save_to_file(self):
-        try:
-            data = [book.to_dict() for book in self.books]
-            with self.json_path.open("w", encoding="utf-8") as f:
-                json.dump(data, f, indent=2)
-            logger.info("Catalog saved to %s", self.json_path)
-        except Exception as e:
-            logger.error("Failed to save catalog: %s", e)
-            raise
+        self.books: List[Book] = []
+        self.load_from_file()
 
     def load_from_file(self):
         if not self.json_path.exists():
-            logger.info("Catalog file %s does not exist, nothing to load", self.json_path)
+            logger.info("books.json not found, starting with empty inventory")
+            self.books = []
             return
+
         try:
-            with self.json_path.open("r", encoding="utf-8") as f:
-                data = json.load(f)
-            self.books = [Book.from_dict(d) for d in data]
-            logger.info("Loaded %d books from %s", len(self.books), self.json_path)
-        except json.JSONDecodeError:
-            logger.error("Catalog file is corrupted or not valid JSON")
-            raise
+            data = json.loads(self.json_path.read_text(encoding="utf-8"))
+            if not isinstance(data, list):
+                raise ValueError("JSON root is not a list")
+            self.books = [Book.from_dict(item) for item in data]
+            logger.info(f"Loaded {len(self.books)} books from {self.json_path}")
         except Exception as e:
-            logger.error("Unexpected error loading catalog: %s", e)
-            raise
+            logger.error("Failed to load books.json: %s", e)
+            self.books = []
+
+    def save_to_file(self):
+        try:
+            data = [b.to_dict() for b in self.books]
+            self.json_path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+            logger.info("Saved books to books.json")
+        except Exception as e:
+            logger.error("Failed to save books.json: %s", e)
+
+    def add_book(self, book: Book) -> bool:
+        if any(b.isbn == book.isbn for b in self.books if b.isbn):
+            logger.info("Book with isbn %s already exists", book.isbn)
+            return False
+        self.books.append(book)
+        self.save_to_file()
+        return True
+
+    def search_by_title(self, title_substr: str) -> List[Book]:
+        q = title_substr.strip().lower()
+        return [b for b in self.books if q in b.title.lower()]
+
+    def search_by_isbn(self, isbn: str) -> Optional[Book]:
+        isbnq = str(isbn).strip()
+        for b in self.books:
+            if b.isbn == isbnq:
+                return b
+        return None
+
+    def display_all(self) -> List[Book]:
+        return list(self.books)
+
+    def issue_book(self, isbn: str) -> bool:
+        book = self.search_by_isbn(isbn)
+        if not book:
+            return False
+        success = book.issue()
+        if success:
+            self.save_to_file()
+        return success
+
+    def return_book(self, isbn: str) -> bool:
+        book = self.search_by_isbn(isbn)
+        if not book:
+            return False
+        success = book.return_book()
+        if success:
+            self.save_to_file()
+        return success
