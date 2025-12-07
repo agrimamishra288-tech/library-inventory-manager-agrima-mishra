@@ -1,0 +1,25 @@
+2025-12-07 14:52:20,908 INFO cli Starting Library Inventory CLI
+2025-12-07 14:52:20,909 INFO library_manager.storage Data file not found. Creating default data file at books.json
+2025-12-07 14:52:20,909 INFO library_manager.storage Saved 0 books to books.json
+2025-12-07 14:52:20,910 INFO library_manager.storage Loaded 0 books from books.json
+2025-12-07 14:53:33,335 INFO library_manager.inventory Issue failed. ISBN not found: 6
+2025-12-07 14:55:31,870 INFO library_manager.storage Saved 1 books to books.json
+2025-12-07 14:55:31,871 INFO library_manager.inventory Added book: 6
+2025-12-07 14:56:10,408 INFO library_manager.storage Saved 2 books to books.json
+2025-12-07 14:56:10,409 INFO library_manager.inventory Added book: 9780525478812
+2025-12-07 15:06:59,858 INFO library_manager.storage Saved 3 books to books.json
+2025-12-07 15:06:59,859 INFO library_manager.inventory Added book: 9780061122411
+2025-12-07 15:07:44,106 INFO library_manager.storage Saved 4 books to books.json
+2025-12-07 15:07:44,107 INFO library_manager.inventory Added book: 9780451524935
+2025-12-07 15:10:21,930 INFO cli Starting Library Inventory CLI
+2025-12-07 15:10:21,948 INFO library_manager.storage Loaded 4 books from books.json
+2025-12-07 15:12:06,543 INFO library_manager.storage Saved 5 books to books.json
+2025-12-07 15:12:06,543 INFO library_manager.inventory Added book: 9781503290563
+2025-12-07 15:13:04,824 INFO library_manager.storage Saved 6 books to books.json
+2025-12-07 15:13:04,824 INFO library_manager.inventory Added book: 9780132350884
+2025-12-07 15:14:38,970 INFO library_manager.storage Saved 7 books to books.json
+2025-12-07 15:14:38,970 INFO library_manager.inventory Added book: 9781593279288
+2025-12-07 15:15:01,330 INFO library_manager.storage Saved 7 books to books.json
+2025-12-07 15:15:01,331 INFO library_manager.inventory Book issued: 9781503290563
+2025-12-07 15:15:10,467 INFO library_manager.storage Saved 7 books to books.json
+2025-12-07 15:15:10,467 INFO library_manager.inventory Book returned: 9781503290563
