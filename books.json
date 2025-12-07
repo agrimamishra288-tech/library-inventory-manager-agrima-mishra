@@ -1,0 +1,44 @@
+[
+  {
+    "title": "The Fault in Our Stars",
+    "author": "Jhon Green",
+    "isbn": "6",
+    "status": "available"
+  },
+  {
+    "title": "The Fault in Our Stars",
+    "author": "John Green",
+    "isbn": "9780525478812",
+    "status": "available"
+  },
+  {
+    "title": "The Alchemist",
+    "author": "paulo coelho",
+    "isbn": "9780061122411",
+    "status": "available"
+  },
+  {
+    "title": "1984",
+    "author": "George Orwell",
+    "isbn": "9780451524935",
+    "status": "available"
+  },
+  {
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "isbn": "9781503290563",
+    "status": "available"
+  },
+  {
+    "title": "Clean Code",
+    "author": "Robert C. Martin",
+    "isbn": "9780132350884",
+    "status": "available"
+  },
+  {
+    "title": "Python Crash Cours",
+    "author": "Eric Matthes",
+    "isbn": "9781593279288",
+    "status": "available"
+  }
+]
